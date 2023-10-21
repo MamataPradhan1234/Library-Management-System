@@ -24,16 +24,21 @@ module.exports.create = async (req, res) => {
         if (existingUser) {
             return res.status(409).send('User with the same email already exists.');
         }
-
+        console.log("password",req.body.password);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const newUser = new User({
             email: req.body.email,
             password: hashedPassword,
             name: req.body.name
         });
-
-        const savedUser=await newUser.save();
-        res.status(200).send(savedUser);
+        if (req.file) {
+            newUser.avatar = 'uploads/users/avatars/' + req.file.filename;
+        } else {
+            newUser.avatar = null; 
+        }
+        const savedUser = await newUser.save();
+        console.log(savedUser);
+        res.send(savedUser);
     } catch (err) {
         console.error('Error in user registration:', err);
         return res.status(500).send('Internal Server Error');
