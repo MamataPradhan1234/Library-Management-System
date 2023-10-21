@@ -1,10 +1,13 @@
 const express=require('express');
 const port=8000;
+const path = require('path');
 const app=express();
 
 require('./config/mongoose');
 require('./config/passport-jwt-strategy')
 app.use(express.urlencoded({ extended: false }));
+
+
 
 app.use('/',require('./routes'));
 
