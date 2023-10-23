@@ -1,6 +1,9 @@
 const User=require('../models/users');
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const middleware =require('../config/middleware'); 
+const AVATAR_PATH =middleware.AVATAR_PATH ;
 
 module.exports.signUp = (req, res) => {
     return res.render('sign-up');
@@ -29,10 +32,13 @@ module.exports.create = async (req, res) => {
         const newUser = new User({
             email: req.body.email,
             password: hashedPassword,
-            name: req.body.name
+            name: req.body.name,
+            avatar:req.file.filename
         });
+        console.log(newUser);
         if (req.file) {
-            newUser.avatar = 'uploads/users/avatars/' + req.file.filename;
+            // newUser.avatar = 'uploads/users/avatars/' + req.file.filename;
+            newUser.avatar=path.join(AVATAR_PATH,req.file.filename);
         } else {
             newUser.avatar = null; 
         }
